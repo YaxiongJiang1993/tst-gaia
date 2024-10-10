@@ -1,0 +1,11 @@
+spring:
+  redis:
+    host: 51.81.244.225
+    port: 6997
+    password: vdata#valor
+    database: 3
+    lettuce:
+      pool:
+        max-idle: 8
+        max-active: 16
+        min-idle: 4
