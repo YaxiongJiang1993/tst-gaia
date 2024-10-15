@@ -31,7 +31,7 @@ public class RedisConfiguration {
     }*/
 
     @Bean
-    public DefaultRedisScript<Long> limitScript() {
+    public DefaultRedisScript<Long> slideWindowLimitScript() {
         //执行 Redis Lua 脚本的一种方式
         DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>();
         //将lua脚本加载ClassPathResource中

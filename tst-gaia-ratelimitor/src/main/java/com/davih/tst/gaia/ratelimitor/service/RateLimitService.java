@@ -6,9 +6,9 @@ public interface RateLimitService {
     /**
      * 申请资源,获取访问权限
      *
-     * @param resourceNum:申请的资源数量
+     * @param limitParams:限流参数
      * @return
      */
-    boolean accquire(String key, int resourceNum);
+    boolean accquire(String key, Object[] limitParams);
 
 }

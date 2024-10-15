@@ -14,8 +14,11 @@ import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
-import org.springframework.stereotype.Component;
+import org.springframework.http.MediaType;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
 import java.util.Objects;
 
@@ -38,13 +41,38 @@ public class RateLimiterAspect {
     }
 
     @Around("pointCut(gaiaRateLimiter)") // 拦截带有@LogExecution注解的方法
-    public Object logExecution(ProceedingJoinPoint pjp, GaiaRateLimiter gaiaRateLimiter) throws Throwable {
+    public Object rateLimit(ProceedingJoinPoint pjp, GaiaRateLimiter gaiaRateLimiter) throws Throwable {
+
+        String key = parseSpel(pjp, gaiaRateLimiter.key(), String.class);
+        long windowRight = System.currentTimeMillis();
+        long windowLeft = windowRight - gaiaRateLimiter.windowSize() * 1000L;
+        Object[] limitParams = new Object[]{windowLeft, windowRight, gaiaRateLimiter.total()};
+        boolean accquire = rateLimitService.accquire(key, limitParams);
+        if (!accquire) {
+            ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+            HttpServletResponse response = attributes.getResponse();
+            response.setCharacterEncoding("UTF-8");
+            // 在这里处理异常并直接写入响应
+            response.setStatus(HttpServletResponse.SC_BAD_GATEWAY); // 设置HTTP状态码
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE); // 设置响应类型为JSON
+            String errsMsg = "{\"code\":1002, \"data\":null, \"msg\":\"server busy, try again later\"}";
+            //这里传提示语可以改成自己项目的返回数据封装的类
+            response.getWriter().write(errsMsg);
+            response.getWriter().flush();
+            return null;
+        }
+
+        // 执行目标方法
+        return pjp.proceed();
+    }
+
+    private <T> T parseSpel(ProceedingJoinPoint pjp, String expression, Class<T> clazz) {
+
         // 获取方法参数
         Object[] args = pjp.getArgs();
         String[] paramNames = ((org.aspectj.lang.reflect.MethodSignature) pjp.getSignature()).getParameterNames();
 
         // 解析SpEL表达式
-        String expression = gaiaRateLimiter.key();
         ExpressionParser parser = new SpelExpressionParser();
 
         // 创建SpEL上下文并将方法参数传入
@@ -53,18 +81,13 @@ public class RateLimiterAspect {
             context.setVariable(paramNames[i], args[i]);
         }
 
-        // 解析表达式并生成日志消息
-        String logMessage = parser.parseExpression(expression).getValue(context, String.class);
-        System.out.println("Before Execution - Log Message: " + logMessage);
-
-        // 执行目标方法
-        Object returnValue = pjp.proceed();
-
-        // 方法执行后，可以记录日志或处理返回值
-        System.out.println("After Execution - Method returned: " + returnValue);
-
-        // 也可以修改返回值（如有需要）
-        return returnValue;
+        // 解析表达式
+        try {
+            Expression express = parser.parseExpression(expression);
+            return express.getValue(context, clazz);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private Method getMethod(JoinPoint joinPoint) {

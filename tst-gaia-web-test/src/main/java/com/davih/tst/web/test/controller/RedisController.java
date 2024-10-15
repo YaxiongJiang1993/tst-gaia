@@ -23,12 +23,12 @@ public class RedisController {
 
     private final RedisTemplate<String, Object> redisTemplate;
 
-    private final RedisScript<Long> redisScript;
+    private final RedisScript<Long> limitScript;
 
     public RedisController(@Lazy RedisTemplate<String, Object> redisTemplate,
-                           @Lazy RedisScript<Long> redisScript) {
+                           @Lazy RedisScript<Long> limitScript) {
         this.redisTemplate = redisTemplate;
-        this.redisScript = redisScript;
+        this.limitScript = limitScript;
     }
 
     @GetMapping("/test")
@@ -45,7 +45,7 @@ public class RedisController {
         int count = 10;
         String combineKey = name + "_count";
         Object[] o = {count, time};
-        Long allowd = redisTemplate.execute(redisScript, Collections.singletonList(combineKey), o);
+        Long allowd = redisTemplate.execute(limitScript, Collections.singletonList(combineKey), o);
         if (Objects.nonNull(allowd) && allowd.equals(1L)) {
             return "allow";
         }

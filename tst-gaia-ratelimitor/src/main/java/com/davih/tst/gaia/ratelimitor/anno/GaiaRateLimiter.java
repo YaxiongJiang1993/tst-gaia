@@ -11,7 +11,14 @@ public @interface GaiaRateLimiter {
 
     String key() default "";
 
+    int total() default 100;
+
     int resource() default 1;
+
+    /**
+     * 窗口大小 单位是s
+     */
+    int windowSize() default 60;
 
    /* String value() default "";*/
 }

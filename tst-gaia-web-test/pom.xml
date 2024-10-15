@@ -13,6 +13,7 @@
 
     <properties>
         <tst-gaia-redis.version>1.0-SNAPSHOT</tst-gaia-redis.version>
+        <tst-gaia-ratelimitor.version>1.0-SNAPSHOT</tst-gaia-ratelimitor.version>
     </properties>
 
     <dependencies>
@@ -20,6 +21,11 @@
             <groupId>com.davih.tst</groupId>
             <artifactId>tst-gaia-redis</artifactId>
             <version>${tst-gaia-redis.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.davih.tst</groupId>
+            <artifactId>tst-gaia-ratelimitor</artifactId>
+            <version>${tst-gaia-ratelimitor.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
