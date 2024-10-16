@@ -19,6 +19,8 @@
         <module>tst-gaia-redis</module>
         <module>tst-gaia-web-test</module>
         <module>tst-gaia-bigdata-test</module>
+        <module>tst-gaia-common-test</module>
+        <module>tst-gaia-common-base</module>
     </modules>
 
     <properties>
