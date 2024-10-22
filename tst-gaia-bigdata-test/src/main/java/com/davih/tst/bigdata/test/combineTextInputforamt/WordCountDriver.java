@@ -1,10 +1,11 @@
-package com.davih.tst.bigdata.test.wordcount;
+package com.davih.tst.bigdata.test.combineTextInputforamt;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.lib.input.CombineTextInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
@@ -33,9 +34,17 @@ public class WordCountDriver {
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
 
+        // 如果不设置InputFormat，它默认用的是TextInputFormat.class
+        job.setInputFormatClass(CombineTextInputFormat.class);
+
+        //虚拟存储切片最大值设置4m
+//        CombineTextInputFormat.setMaxInputSplitSize(job, 4194304);
+        CombineTextInputFormat.setMaxInputSplitSize(job, 20971520);
+
+
         // 6 设置输入路径和输出路径
-        FileInputFormat.setInputPaths(job, new Path("/data/tmp/input"));
-        FileOutputFormat.setOutputPath(job, new Path("/data/tmp/output/output126"));
+        FileInputFormat.setInputPaths(job, new Path("D:\\input\\inputcombinetextinputformat"));
+        FileOutputFormat.setOutputPath(job, new Path("D:\\hadoop\\outputCombine3"));
 
         // 7 提交job
         boolean result = job.waitForCompletion(true);

@@ -1,4 +1,4 @@
-package com.davih.tst.bigdata.test.wordcount;
+package com.davih.tst.bigdata.test.combiner;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -33,9 +33,14 @@ public class WordCountDriver {
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
 
+//        job.setCombinerClass(WordCountCombiner.class);
+//
+//        job.setNumReduceTasks(0);
+        job.setCombinerClass(WordCountReducer.class);
+//
         // 6 设置输入路径和输出路径
-        FileInputFormat.setInputPaths(job, new Path("/data/tmp/input"));
-        FileOutputFormat.setOutputPath(job, new Path("/data/tmp/output/output126"));
+        FileInputFormat.setInputPaths(job, new Path("D:\\input\\inputword"));
+        FileOutputFormat.setOutputPath(job, new Path("D:\\hadoop\\output222"));
 
         // 7 提交job
         boolean result = job.waitForCompletion(true);
