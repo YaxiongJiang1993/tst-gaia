@@ -1,5 +1,6 @@
 package com.davih.tst.common.test.rate_limiter;
 
+
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
@@ -7,46 +8,48 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
-// 计速器 限速
+// 令牌桶 限速
 @Slf4j
-public class CounterLimiter {
+public class TokenBucketLimiter {
+    // 上一次令牌发放时间
+    public long lastTime = System.currentTimeMillis();
+    // 桶的容量
+    public int capacity = 2;
+    // 令牌生成速度 /s
+    public int rate = 2;
+    // 当前令牌数量
+    public AtomicInteger tokens = new AtomicInteger(0);
+    ;
 
-    // 起始时间
-    private static long startTime = System.currentTimeMillis();
-    // 时间区间的时间间隔 ms
-    private static long interval = 1000;
-    // 每秒限制数量
-    private static long maxCount = 2;
-    //累加器
-    private static AtomicLong accumulator = new AtomicLong();
+    //返回值说明：
+    // false 没有被限制到
+    // true 被限流
+    public synchronized boolean isLimited(long taskId, int applyCount) {
+        long now = System.currentTimeMillis();
+        //时间间隔,单位为 ms
+        long gap = now - lastTime;
 
-    // 计数判断, 是否超出限制
-    private static long tryAcquire(long taskId, int turn) {
-        long nowTime = System.currentTimeMillis();
-        //在时间区间之内
-        if (nowTime < startTime + interval) {
-            long count = accumulator.incrementAndGet();
+        //计算时间段内的令牌数
+        int reverse_permits = (int) (gap * rate / 1000);
+        int all_permits = tokens.get() + reverse_permits;
+        // 当前令牌数
+        tokens.set(Math.min(capacity, all_permits));
+        log.info("tokens {} capacity {} gap {} ", tokens, capacity, gap);
 
-            if (count <= maxCount) {
-                return count;
-            } else {
-                return -count;
-            }
+        if (tokens.get() < applyCount) {
+            // 若拿不到令牌,则拒绝
+            // log.info("被限流了.." + taskId + ", applyCount: " + applyCount);
+            return true;
         } else {
-            //在时间区间之外
-            synchronized (CounterLimiter.class) {
+            // 还有令牌，领取令牌
+            tokens.getAndAdd(-applyCount);
+            lastTime = now;
 
-                log.info("新时间区到了,taskId{}, turn {}..", taskId, turn);
-                // 再一次判断，防止重复初始化
-                if (nowTime > startTime + interval) {
-                    accumulator.set(0);
-                    startTime = nowTime;
-                }
-            }
-            return 0;
+            // log.info("剩余令牌.." + tokens);
+            return false;
         }
+
     }
 
     //线程池，用于多线程模拟测试
@@ -61,21 +64,25 @@ public class CounterLimiter {
         final int threads = 2;
         // 每条线程的执行轮数
         final int turns = 20;
+
+
         // 同步器
         CountDownLatch countDownLatch = new CountDownLatch(threads);
         long start = System.currentTimeMillis();
         for (int i = 0; i < threads; i++) {
-            pool.submit(() -> {
+            pool.submit(() ->
+            {
                 try {
 
                     for (int j = 0; j < turns; j++) {
 
                         long taskId = Thread.currentThread().getId();
-                        long index = tryAcquire(taskId, j);
-                        if (index <= 0) {
+                        boolean intercepted = isLimited(taskId, 1);
+                        if (intercepted) {
                             // 被限制的次数累积
                             limited.getAndIncrement();
                         }
+
                         Thread.sleep(200);
                     }
 
@@ -104,5 +111,4 @@ public class CounterLimiter {
 
 
 }
-
 

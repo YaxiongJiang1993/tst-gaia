@@ -7,47 +7,50 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
-// 计速器 限速
+// 漏桶 限流
 @Slf4j
-public class CounterLimiter {
+public class LeakBucketLimiter {
 
-    // 起始时间
-    private static long startTime = System.currentTimeMillis();
-    // 时间区间的时间间隔 ms
-    private static long interval = 1000;
-    // 每秒限制数量
-    private static long maxCount = 2;
-    //累加器
-    private static AtomicLong accumulator = new AtomicLong();
+    // 计算的起始时间
+    private static long lastOutTime = System.currentTimeMillis();
+    // 流出速率 每秒 2 次
+    private static int leakRate = 2;
 
-    // 计数判断, 是否超出限制
-    private static long tryAcquire(long taskId, int turn) {
-        long nowTime = System.currentTimeMillis();
-        //在时间区间之内
-        if (nowTime < startTime + interval) {
-            long count = accumulator.incrementAndGet();
+    // 桶的容量
+    private static int capacity = 2;
 
-            if (count <= maxCount) {
-                return count;
-            } else {
-                return -count;
-            }
-        } else {
-            //在时间区间之外
-            synchronized (CounterLimiter.class) {
+    //剩余的水量
+    private static AtomicInteger water = new AtomicInteger(0);
 
-                log.info("新时间区到了,taskId{}, turn {}..", taskId, turn);
-                // 再一次判断，防止重复初始化
-                if (nowTime > startTime + interval) {
-                    accumulator.set(0);
-                    startTime = nowTime;
-                }
-            }
-            return 0;
+    //返回值说明：
+    // false 没有被限制到
+    // true 被限流
+    public static synchronized boolean isLimit(long taskId, int turn) {
+        // 如果是空桶，就当前时间作为漏出的时间
+        if (water.get() == 0) {
+            lastOutTime = System.currentTimeMillis();
+            water.addAndGet(1);
+            return false;
         }
+        // 执行漏水
+        int waterLeaked = ((int) ((System.currentTimeMillis() - lastOutTime) / 1000)) * leakRate;
+        // 计算剩余水量
+        int waterLeft = water.get() - waterLeaked;
+        water.set(Math.max(0, waterLeft));
+        // 重新更新leakTimeStamp
+        lastOutTime = System.currentTimeMillis();
+        // 尝试加水,并且水还未满 ，放行
+        if ((water.get()) < capacity) {
+            water.addAndGet(1);
+            return false;
+        } else {
+            // 水满，拒绝加水， 限流
+            return true;
+        }
+
     }
+
 
     //线程池，用于多线程模拟测试
     private ExecutorService pool = Executors.newFixedThreadPool(10);
@@ -61,18 +64,19 @@ public class CounterLimiter {
         final int threads = 2;
         // 每条线程的执行轮数
         final int turns = 20;
-        // 同步器
+        // 线程同步器
         CountDownLatch countDownLatch = new CountDownLatch(threads);
         long start = System.currentTimeMillis();
         for (int i = 0; i < threads; i++) {
-            pool.submit(() -> {
+            pool.submit(() ->
+            {
                 try {
 
                     for (int j = 0; j < turns; j++) {
 
                         long taskId = Thread.currentThread().getId();
-                        long index = tryAcquire(taskId, j);
-                        if (index <= 0) {
+                        boolean intercepted = isLimit(taskId, j);
+                        if (intercepted) {
                             // 被限制的次数累积
                             limited.getAndIncrement();
                         }
@@ -101,8 +105,6 @@ public class CounterLimiter {
         log.info("限制的比例为：" + (float) limited.get() / (float) (threads * turns));
         log.info("运行的时长为：" + time);
     }
-
-
 }
 
 
