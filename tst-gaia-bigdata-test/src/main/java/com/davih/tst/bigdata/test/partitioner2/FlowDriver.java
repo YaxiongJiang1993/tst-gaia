@@ -37,8 +37,8 @@ public class FlowDriver {
 
 
         // 6 设置数据的输入路径和输出路径
-        FileInputFormat.setInputPaths(job, new Path("D:\\input\\inputflow"));
-        FileOutputFormat.setOutputPath(job, new Path("D:\\hadoop\\output666"));
+        FileInputFormat.setInputPaths(job, new Path("/home/david/flower/tst-gaia/tst-gaia-bigdata-test/src/main/resources/data/inputflow"));
+        FileOutputFormat.setOutputPath(job, new Path("/data/tmp/output/output2"));
 
         // 7 提交job
         boolean result = job.waitForCompletion(true);
