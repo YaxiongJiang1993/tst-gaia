@@ -13,8 +13,10 @@ public class JolTest3 {
         }
 
         Object obj = new Object();
-        obj.hashCode();
         String objStr = ClassLayout.parseInstance(obj).toPrintable();
+        System.out.println(objStr);
+        obj.hashCode();
+        objStr = ClassLayout.parseInstance(obj).toPrintable();
         System.out.println(objStr);
 
         synchronized (obj) {
