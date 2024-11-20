@@ -137,4 +137,24 @@ public interface SqlListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitFunctionCall(SqlParser.FunctionCallContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SqlParser#partitionBy}.
+	 * @param ctx the parse tree
+	 */
+	void enterPartitionBy(SqlParser.PartitionByContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SqlParser#partitionBy}.
+	 * @param ctx the parse tree
+	 */
+	void exitPartitionBy(SqlParser.PartitionByContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SqlParser#orderBy}.
+	 * @param ctx the parse tree
+	 */
+	void enterOrderBy(SqlParser.OrderByContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SqlParser#orderBy}.
+	 * @param ctx the parse tree
+	 */
+	void exitOrderBy(SqlParser.OrderByContext ctx);
 }

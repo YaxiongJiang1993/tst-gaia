@@ -2,6 +2,7 @@ package com.davih.tst.common.test.antr.hql;
 
 import com.davih.tst.common.test.antr.hql.code.HplsqlLexer;
 import com.davih.tst.common.test.antr.hql.code.HplsqlParser;
+import com.google.common.collect.Maps;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CodePointCharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -14,7 +15,10 @@ import java.util.Map;
 public class DavTest {
 
     public static void main(String[] args) {
-
+        String sql="";
+        String dbName="";
+        Long limit =1000L;
+        Map<String, Object> userAccessTable= Maps.newHashMap();
     }
 
     public String antrlValidateSql(String sql, String dbName, Long limit, Map<String, Object> userAccessTable) {

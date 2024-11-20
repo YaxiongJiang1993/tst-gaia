@@ -88,4 +88,16 @@ public interface SqlVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitFunctionCall(SqlParser.FunctionCallContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#partitionBy}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPartitionBy(SqlParser.PartitionByContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#orderBy}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOrderBy(SqlParser.OrderByContext ctx);
 }

@@ -168,6 +168,30 @@ public class SqlBaseListener implements SqlListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitFunctionCall(SqlParser.FunctionCallContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPartitionBy(SqlParser.PartitionByContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPartitionBy(SqlParser.PartitionByContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterOrderBy(SqlParser.OrderByContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitOrderBy(SqlParser.OrderByContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

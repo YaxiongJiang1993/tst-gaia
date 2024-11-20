@@ -13,13 +13,13 @@ select
     ;
 
 selectElements
-    : '*'
-    | column (',' column)*
+    : '*'  // 允许 * 选择所有列
+    | column (',' column)*  // 允许多个列
     ;
 
 column
-    : (ID '.')? ID (AS ID)?
-    | functionCall
+    : (ID '.')? ID (AS ID)?  // 列名或列别名
+    | functionCall  // 支持函数调用
     ;
 
 fromClause
@@ -53,7 +53,15 @@ limitClause
 
 functionCall
     : ID '(' (column (',' column)*)? ')'
-    | ID 'OVER' '(' (column (',' column)*)? ')'
+    | ID 'OVER' '(' partitionBy? orderBy? ')'
+    ;
+
+partitionBy
+    : 'PARTITION BY' column (',' column)*
+    ;
+
+orderBy
+    : 'ORDER BY' column (',' column)*
     ;
 
 SELECT : 'SELECT';
@@ -63,9 +71,13 @@ LIMIT  : 'LIMIT';
 AS     : 'AS';
 AND    : 'AND';
 UNION  : 'UNION';
+OVER   : 'OVER';
+PARTITION : 'PARTITION';
+BY     : 'BY';
+ORDER  : 'ORDER';
 
 ID     : [a-zA-Z_][a-zA-Z_0-9]*;
-STRING : '\'' ( ~('\''|'\n') )* '\'' ;  // 处理带单引号的字符串
+STRING : '\'' ( ~('\''|'\n') )* '\'';  // 处理带单引号的字符串
 INT    : [0-9]+;
 
 WS     : [ \t\r\n]+ -> skip;
