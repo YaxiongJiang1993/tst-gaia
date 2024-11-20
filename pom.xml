@@ -21,6 +21,8 @@
         <module>tst-gaia-bigdata-test</module>
         <module>tst-gaia-common-test</module>
         <module>tst-gaia-common-base</module>
+        <module>tst-gaia-web-websocket</module>
+        <module>tst-gaia-web-mqtt</module>
     </modules>
 
     <properties>
