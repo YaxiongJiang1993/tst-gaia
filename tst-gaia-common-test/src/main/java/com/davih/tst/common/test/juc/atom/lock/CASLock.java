@@ -1,6 +1,6 @@
 package com.davih.tst.common.test.juc.atom.lock;
 
-import com.tuling.jucdemo.factory.UnsafeFactory;
+import com.davih.tst.common.test.juc.atom.factory.UnsafeFactory;
 import sun.misc.Unsafe;
 
 /**

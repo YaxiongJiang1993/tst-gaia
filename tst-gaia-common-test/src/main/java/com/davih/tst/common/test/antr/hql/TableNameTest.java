@@ -32,6 +32,15 @@ public class TableNameTest {
                 "  and dt = '20231210'\n" +
                 "order by action_time desc\n" +
                 "limit 1000";
+        for (int i = 0; i < 5; i++) {
+            System.out.println("=========================" + i + "============================");
+            List<String> tables = getTable(sql);
+            System.out.println(tables);
+        }
+
+    }
+
+    private static List<String> getTable(String sql) {
         CodePointCharStream stream = CharStreams.fromString(sql);
         HplsqlLexer lexer = new HplsqlLexer(stream);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -40,7 +49,7 @@ public class TableNameTest {
         QueryTableListener queryListener = new QueryTableListener();
         walker.walk(queryListener, parser.program());
         List<String> tables = queryListener.getWithTableNames();
-        System.out.println(tables);
+        return tables;
     }
 
 }
