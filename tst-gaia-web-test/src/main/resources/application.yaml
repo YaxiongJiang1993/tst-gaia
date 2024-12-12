@@ -1,6 +1,11 @@
 server:
   port: 10010
 spring:
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 512MB
+      max-request-size: 512MB
   redis:
     host: 51.81.244.225
     port: 6997
@@ -11,4 +16,13 @@ spring:
         max-idle: 8
         max-active: 16
         min-idle: 4
+
+## sftp 附件上传配置
+uploadSftp:
+  host: 15.204.22.126
+  port: 28822
+  username: fpro
+  password: fpro123456
+  path: /fpro
+
 
