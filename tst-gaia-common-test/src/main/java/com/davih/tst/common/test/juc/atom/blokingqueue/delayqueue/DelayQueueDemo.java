@@ -1,12 +1,13 @@
 package com.davih.tst.common.test.juc.atom.blokingqueue.delayqueue;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.DelayQueue;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
 
-import org.springframework.util.StringUtils;
 
 public class DelayQueueDemo {
 
