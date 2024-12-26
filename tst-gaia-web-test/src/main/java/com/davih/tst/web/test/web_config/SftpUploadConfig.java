@@ -7,8 +7,8 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * @Description: sftp 附件上传配置
- * @Author: junqiang.lu
- * @Date: 2020/9/27
+ * @Author: david.jiang
+ * @Date: 2024/12/16
  */
 @ToString
 @Getter
