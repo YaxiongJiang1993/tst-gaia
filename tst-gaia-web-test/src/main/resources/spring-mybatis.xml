@@ -39,6 +39,6 @@
         <constructor-arg index="0" ref="sqlSessionFactory" />
     </bean>
 
-    <bean id="lock" class="com.davih.tst.web.test.zk.lock.sql.MysqlDistributedLock"/>
+<!--    <bean id="lock" class="com.davih.tst.web.test.zk.lock.sql.MysqlDistributedLock"/>-->
 
 </beans>

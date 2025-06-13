@@ -1,7 +1,9 @@
 package com.davih.tst.web.test.controller;
 
 
+import com.davih.tst.web.test.kafka.KafkaTest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +22,21 @@ import java.util.Map;
 @RestController
 @RequestMapping("/tst/gaia/test")
 public class TestController {
+
+
+    @GetMapping("/test01")
+    public String test01() {
+        log.info("hello name: {}", "01");
+        KafkaTest.test01();
+        return null;
+    }
+
+    @GetMapping("/test02")
+    public String test02() {
+        log.info("hello name: {}", "02");
+        KafkaTest.send();
+        return null;
+    }
 
     @GetMapping("/test")
     public String test(@RequestParam("name") String name) {

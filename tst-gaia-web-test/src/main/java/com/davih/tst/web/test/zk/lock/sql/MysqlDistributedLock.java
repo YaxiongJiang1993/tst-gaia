@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  * @Author Fox
  *
  */
-@Component
+//@Component
 public class MysqlDistributedLock extends AbstractLock {
 
     @Autowired
