@@ -25,6 +25,7 @@
         <module>tst-gaia-web-mqtt</module>
         <module>tst-gaia-reactor-test</module>
         <module>tst-gaia-jedis</module>
+        <module>tst-gaia-alogrithm</module>
     </modules>
 
     <properties>
