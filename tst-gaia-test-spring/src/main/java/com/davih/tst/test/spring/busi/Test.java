@@ -1,6 +1,6 @@
 package com.davih.tst.test.spring.busi;
 
-import com.davih.tst.test.spring.busi.service.UserService;
+import com.davih.tst.test.spring.busi.service.IUser;
 import com.davih.tst.test.spring.spring.DavihApplicationContext;
 
 public class Test {
@@ -9,7 +9,11 @@ public class Test {
 
         DavihApplicationContext applicationContext = new DavihApplicationContext(AppConfig.class);
 
-        UserService userService = (UserService) applicationContext.getBean("userService");
+        IUser userService = (IUser) applicationContext.getBean("userService");
         userService.test();
+
+//        System.out.println( applicationContext.getBean("userService"));
+//        System.out.println( applicationContext.getBean("userService"));
+//        System.out.println( applicationContext.getBean("userService"));
     }
 }
