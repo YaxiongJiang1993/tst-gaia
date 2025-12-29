@@ -98,7 +98,7 @@ public class DavihApplicationContext {
             ComponentScan componentScanAnnotation = configClas.getAnnotation(ComponentScan.class);
             String path = componentScanAnnotation.value();
 
-            System.out.println(path);
+            System.out.println("path: "+path);
 
             path = path.replace(".", "/");
 
@@ -110,11 +110,11 @@ public class DavihApplicationContext {
                 File[] files = file.listFiles();
                 for (File f : files) {
                     String absolutePath = f.getAbsolutePath();
-                    System.out.println(absolutePath);
+                    System.out.println("absolutePath: "+absolutePath);
 
                     absolutePath = absolutePath.substring(absolutePath.indexOf("com"), absolutePath.indexOf(".class"));
                     absolutePath = absolutePath.replace("/", ".");
-                    System.out.println(absolutePath);
+                    System.out.println("convert absolutePath: "+absolutePath);
 
                     try {
                         Class<?> clazz = classLoader.loadClass(absolutePath);
