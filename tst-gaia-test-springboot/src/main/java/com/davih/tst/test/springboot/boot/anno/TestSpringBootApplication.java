@@ -1,6 +1,6 @@
 package com.davih.tst.test.springboot.boot.anno;
 
-import com.davih.tst.test.springboot.boot.conf.WebServerAutoConfiguration;
+import com.davih.tst.test.springboot.boot.util.TestSelectorImport;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -14,6 +14,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Configuration
 @ComponentScan
-@Import(WebServerAutoConfiguration.class)
+@Import(TestSelectorImport.class)
 public @interface TestSpringBootApplication {
 }
