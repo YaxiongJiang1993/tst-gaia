@@ -27,6 +27,7 @@
         <module>tst-gaia-jedis</module>
         <module>tst-gaia-alogrithm</module>
         <module>tst-gaia-test-spring</module>
+        <module>tst-gaia-test-springboot</module>
     </modules>
 
     <properties>
