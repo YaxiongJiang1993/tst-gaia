@@ -1,1 +1,2 @@
 com.davih.tst.test.springboot.boot.conf.WebServerAutoConfiguration
+com.davih.tst.test.springboot.boot.conf.AopAutoConfiguration
